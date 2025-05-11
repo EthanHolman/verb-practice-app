@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   },
   text: {
     flexGrow: 1,
-    fontSize: TYPOGRAPHY.fontMd,
+    fontSize: TYPOGRAPHY.md,
     color: COLORS.primary,
     paddingLeft: LAYOUT.paddingMd / 2,
   },

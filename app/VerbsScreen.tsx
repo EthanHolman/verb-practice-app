@@ -1,57 +1,58 @@
 import AddNewVerb from "@/components/AddNewVerb";
-import { useNavigation } from "expo-router";
-import { useSQLiteContext } from "expo-sqlite";
-import { useEffect, useState } from "react";
-import { FlatList, Pressable, Text, TextInput, View } from "react-native";
+import Typography from "@/components/Typography";
+import { VerbContext } from "@/contexts/VerbContext";
+import { COLORS, LAYOUT } from "@/styles/theme";
+import { useContext, useEffect, useState } from "react";
+import { FlatList, StyleSheet, View } from "react-native";
 
 export default function VerbsScreen() {
-  const [myVal, setMyVal] = useState("");
   const [verbs, setVerbs] = useState<string[]>([]);
-  const db = useSQLiteContext();
+  const [loading, setLoading] = useState(false);
 
-  const refresh = () =>
-    db.getAllAsync("select * from test").then((allRows) => {
-      console.log(allRows);
-      setVerbs(allRows.map((x) => x["value"]));
+  const verbsContext = useContext(VerbContext);
+
+  const refresh = () => {
+    setLoading(true);
+    verbsContext.getVerbNames().then((verbs) => {
+      setVerbs(verbs);
+      setLoading(false);
     });
+  };
 
   useEffect(() => {
     refresh();
   }, []);
 
-  const handlePress = async () => {
-    db.execSync(`
-      create table if not exists test (id integer primary key not null, value text not null);
-      insert into test (value) values ('${myVal}');
-      `);
-
-    refresh();
-
-    setMyVal("");
-  };
-
   return (
-    <View>
-      <AddNewVerb />
-      {verbs.length ? (
-        <FlatList
-          data={verbs}
-          renderItem={(item) => <Text>{item.item}</Text>}
-        />
-      ) : (
-        <Text>Your verbs will be here</Text>
-      )}
-      <TextInput
-        value={myVal}
-        onChangeText={setMyVal}
-        style={{ borderWidth: 1, fontSize: 16 }}
+    <>
+      <AddNewVerb onAdd={refresh} />
+      <FlatList
+        data={verbs}
+        refreshing={loading}
+        onRefresh={refresh}
+        renderItem={(item) => (
+          <Typography size="lg" style={styles.listItem}>
+            {item.item}
+          </Typography>
+        )}
+        ListEmptyComponent={
+          <Typography>You don't have any verbs yet!</Typography>
+        }
+        ItemSeparatorComponent={(props) => (
+          <View style={{ height: 1, backgroundColor: COLORS.borderLight }} />
+        )}
+        keyExtractor={(item) => item}
+        style={styles.list}
       />
-      <Pressable
-        style={{ height: 50, width: 250, borderWidth: 1, borderColor: "green" }}
-        onPress={handlePress}
-      >
-        <Text>Press Me</Text>
-      </Pressable>
-    </View>
+    </>
   );
 }
+
+const styles = StyleSheet.create({
+  listItem: {
+    padding: LAYOUT.paddingSm,
+  },
+  list: {
+    backgroundColor: COLORS.foreground,
+  },
+});

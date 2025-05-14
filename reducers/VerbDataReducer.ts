@@ -15,7 +15,8 @@ export type VerbDataAction =
     }
   | { type: "REMOVE_TENSE"; payload: string }
   | { type: "RENAME_TENSE"; payload: { oldTense: string; newTense: string } }
-  | { type: "RESET" };
+  | { type: "RESET" }
+  | { type: "SET_VERB_DATA"; payload: IVerb };
 
 export function verbDataReducer(state: IVerb, action: VerbDataAction): IVerb {
   switch (action.type) {
@@ -62,6 +63,9 @@ export function verbDataReducer(state: IVerb, action: VerbDataAction): IVerb {
           return c;
         }),
       };
+
+    case "SET_VERB_DATA":
+      return { ...action.payload };
 
     case "RESET":
       return initialVerbData();

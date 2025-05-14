@@ -1,4 +1,10 @@
-import { createVerb, getVerbNames, getVerbs } from "@/data/Verbs";
+import {
+  createVerb,
+  getVerbNames,
+  getAllVerbs,
+  getVerb,
+  updateVerb,
+} from "@/data/Verbs";
 import { IVerb } from "@/data/IVerb";
 import { createContext } from "react";
 
@@ -8,8 +14,10 @@ type VerbProviderProps = {
 
 type VerbContextType = {
   getVerbNames: () => Promise<string[]>;
-  getVerbs: () => Promise<IVerb[]>;
+  getAllVerbs: () => Promise<IVerb[]>;
+  getVerb(verbName: string): Promise<IVerb>;
   createVerb: (verb: IVerb) => Promise<void>;
+  updateVerb: (verb: IVerb) => Promise<void>;
 };
 
 export const VerbContext = createContext<VerbContextType>(
@@ -21,8 +29,10 @@ export const VerbProvider = ({ children }: VerbProviderProps) => {
     <VerbContext.Provider
       value={{
         getVerbNames,
-        getVerbs,
+        getAllVerbs,
         createVerb,
+        getVerb,
+        updateVerb,
       }}
     >
       {children}

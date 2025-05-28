@@ -34,15 +34,15 @@ export async function getVerb(verbName: string): Promise<IVerb> {
   }
 }
 
-export async function getAllVerbs(): Promise<IVerb[]> {
+export async function getVerbs(verbNames: string[]): Promise<IVerb[]> {
   try {
-    const verbs = JSON.parse((await AsyncStorage.getItem("verbs")) ?? "[]").map(
-      (x: string) => `verb_${x}`
+    const toReturn: IVerb[] = [];
+    const found = await AsyncStorage.multiGet(
+      verbNames.map((name) => `verb_${name}`)
     );
+    for (const item of found) if (item[1]) toReturn.push(JSON.parse(item[1]));
 
-    const rawVerbData = await AsyncStorage.multiGet(verbs);
-    console.log(rawVerbData);
-    return [];
+    return toReturn;
   } catch (error) {
     console.error("Error fetching verbs:", error);
     throw new Error("Error fetching verbs: " + error);

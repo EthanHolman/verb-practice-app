@@ -6,21 +6,29 @@ type Props = PropsWithChildren<
   {
     color?: keyof typeof COLORS;
     label: string;
+    textSize?: keyof typeof TYPOGRAPHY;
   } & PressableProps
 >;
 
 export default function Button(props: Props) {
   return (
     <Pressable
-      style={{
-        backgroundColor: props.color ?? COLORS.primary,
-        borderRadius: 4,
-        padding: 10,
-      }}
+      style={[
+        {
+          backgroundColor: COLORS[props.color ?? "primary"],
+          borderRadius: 4,
+          padding: 10,
+        },
+        props.style,
+      ]}
       onPress={props.onPress}
     >
       <Text
-        style={{ color: "white", fontSize: TYPOGRAPHY.md, textAlign: "center" }}
+        style={{
+          color: "white",
+          fontSize: TYPOGRAPHY[props.textSize ?? "md"],
+          textAlign: "center",
+        }}
       >
         {props.label}
       </Text>

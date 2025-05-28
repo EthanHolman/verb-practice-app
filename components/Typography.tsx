@@ -6,19 +6,28 @@ type Props = PropsWithChildren<
   {
     size?: keyof typeof TYPOGRAPHY;
     color?: keyof typeof COLORS;
+    bold?: boolean;
   } & TextProps
 >;
 
 export default function Typography({
   size = "md",
   color = "text",
+  bold = false,
   children,
   style,
   ...props
 }: Props) {
   return (
     <Text
-      style={[{ fontSize: TYPOGRAPHY[size], color: COLORS[color] }, style]}
+      style={[
+        {
+          fontSize: TYPOGRAPHY[size],
+          color: COLORS[color],
+          fontWeight: bold ? "bold" : "normal",
+        },
+        style,
+      ]}
       {...props}
     >
       {children}

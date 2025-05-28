@@ -11,12 +11,15 @@ export const COLORS = {
 export const LAYOUT = {
   paddingSm: 16,
   paddingMd: 18,
+  paddingLg: 24,
 };
 
 export const TYPOGRAPHY = {
   sm: 16,
   md: 18,
   lg: 20,
+  h1: 38,
+  h2: 32,
 };
 
 export const ICON_SIZES = {

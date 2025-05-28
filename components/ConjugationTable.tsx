@@ -35,6 +35,7 @@ function EditCell(props: { value: string; onChange: (text: string) => void }) {
       value={props.value}
       onChangeText={props.onChange}
       placeholder="Conjugation..."
+      autoCapitalize="none"
     />
   );
 }

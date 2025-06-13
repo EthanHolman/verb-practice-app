@@ -9,13 +9,17 @@ type Props = {
   verbs: string[];
   loading: boolean;
   doRefresh: () => void;
-  onPress: (verb: string) => void;
+  onPress?: (verb: string) => void;
   multiselect?: boolean;
   selectedVerbs?: string[];
   listEmptyComponent?: JSX.Element;
 };
 
 export default function VerbsList(props: Props) {
+  function handlePress(item: string) {
+    if (props.onPress) props.onPress(item);
+  }
+
   return (
     <FlatList
       data={props.verbs}
@@ -23,14 +27,14 @@ export default function VerbsList(props: Props) {
       onRefresh={props.doRefresh}
       renderItem={(item) => (
         <Pressable
-          onPress={() => props.onPress(item.item)}
+          onPress={() => handlePress(item.item)}
           style={styles.listItem}
         >
           {props.multiselect && (
             <Checkbox
               style={styles.checkbox}
               value={(props.selectedVerbs ?? []).includes(item.item)}
-              onValueChange={() => props.onPress(item.item)}
+              onValueChange={() => handlePress(item.item)}
             />
           )}
           <Typography>{item.item}</Typography>

@@ -1,4 +1,5 @@
 import EditVerbModal from "@/components/EditVerbModal";
+import ImportVerbModal from "@/components/ImportVerbModal";
 import TileButton from "@/components/TileButton";
 import VerbsList from "@/components/VerbsList";
 import { NEW_VERB_NAME } from "@/constants";
@@ -10,6 +11,7 @@ export default function VerbsScreen() {
   const [verbs, setVerbs] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [verbToEdit, setVerbToEdit] = useState<string | undefined>();
+  const [showVerbImport, setShowVerbImport] = useState(false);
 
   const verbsContext = useContext(VerbContext);
 
@@ -23,6 +25,7 @@ export default function VerbsScreen() {
 
   function onVerbEditClose(doReload: boolean) {
     setVerbToEdit(undefined);
+    setShowVerbImport(false);
     if (doReload) {
       refresh();
     }
@@ -36,8 +39,13 @@ export default function VerbsScreen() {
     <>
       <TileButton
         icon="add-circle-outline"
-        label="Add New Verb"
+        label="Add Your Own Verb"
         onPress={() => setVerbToEdit(NEW_VERB_NAME)}
+      />
+      <TileButton
+        icon="cloud-circle"
+        label="Import Verb"
+        onPress={() => setShowVerbImport(true)}
       />
       <VerbsList
         verbs={verbs}
@@ -47,6 +55,11 @@ export default function VerbsScreen() {
       />
       <EditVerbModal
         verb={verbToEdit}
+        onSave={() => onVerbEditClose(true)}
+        onCancel={() => onVerbEditClose(false)}
+      />
+      <ImportVerbModal
+        show={showVerbImport}
         onSave={() => onVerbEditClose(true)}
         onCancel={() => onVerbEditClose(false)}
       />

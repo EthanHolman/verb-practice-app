@@ -1,12 +1,13 @@
-import { Modal, Pressable, SafeAreaView, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useContext, useEffect, useReducer, useState } from "react";
-import { COLORS, LAYOUT } from "@/styles/theme";
+import { LAYOUT } from "@/styles/theme";
 import TextInput from "./TextInput";
 import ConjugationTable from "./ConjugationTable";
 import { initialVerbData, verbDataReducer } from "@/reducers/VerbDataReducer";
 import { VerbContext } from "@/contexts/VerbContext";
-import Typography from "./Typography";
 import { NEW_VERB_NAME } from "@/constants";
+import TextButton from "./TextButton";
+import Modal from "./Modal";
 
 type Props = {
   verb?: string;
@@ -70,56 +71,33 @@ export default function EditVerbModal(props: Props) {
   return (
     <Modal
       visible={showModal}
-      transparent={false}
-      presentationStyle="pageSheet"
-      animationType="slide"
+      title={`${isNewVerb ? "Add" : "Edit"} Verb`}
+      headerLeft={<TextButton text="Cancel" onPress={handleCancel} />}
+      headerRight={
+        <TextButton
+          text={isNewVerb ? "Create" : "Update"}
+          onPress={handleAddVerb}
+          disabled={!allowCreate}
+        />
+      }
     >
-      <SafeAreaView style={styles.modal}>
-        <View style={styles.modalHeader}>
-          <Pressable onPress={handleCancel}>
-            <Typography color="primary">Cancel</Typography>
-          </Pressable>
-          <Typography style={styles.modalHeaderTitle}>
-            {isNewVerb ? "Add" : "Edit"} Verb
-          </Typography>
-          <Pressable onPress={handleAddVerb} disabled={!allowCreate}>
-            <Typography color={allowCreate ? "primary" : "border"}>
-              {isNewVerb ? "Create" : "Update"}
-            </Typography>
-          </Pressable>
-        </View>
-        <View style={styles.modalContent}>
-          <TextInput
-            variant="outline"
-            value={verbData.infinitive}
-            onChangeText={onChangeVerbName}
-            placeholder="Verb Name"
-            style={{ marginBottom: LAYOUT.paddingSm }}
-            editable={isNewVerb}
-          />
-          <ConjugationTable verb={verbData} verbDispatch={verbDataDispatch} />
-        </View>
-      </SafeAreaView>
+      <View style={styles.body}>
+        <TextInput
+          variant="outline"
+          value={verbData.infinitive}
+          onChangeText={onChangeVerbName}
+          placeholder="Verb Name"
+          style={{ marginBottom: LAYOUT.paddingSm }}
+          editable={isNewVerb}
+        />
+        <ConjugationTable verb={verbData} verbDispatch={verbDataDispatch} />
+      </View>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
-  modal: {
-    backgroundColor: COLORS.foreground,
-    flex: 1,
-  },
-  modalHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: LAYOUT.paddingSm,
-  },
-  modalHeaderTitle: {
-    flexGrow: 1,
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  modalContent: {
+  body: {
     padding: LAYOUT.paddingSm,
   },
 });

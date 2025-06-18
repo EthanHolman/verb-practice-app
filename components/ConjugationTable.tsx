@@ -1,6 +1,6 @@
 import { COLORS, TYPOGRAPHY } from "@/styles/theme";
 import { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import TextInput from "./TextInput";
 import { IVerb } from "@/data/IVerb";
 import Button from "./Button";
@@ -72,22 +72,24 @@ export default function ConjugationTable(props: Props) {
         <Cell value="Them" />
         <Cell value="We" />
       </View>
-      {props.verb.conjugations.map((conj) => (
-        <View style={styles.column} key={conj.tense}>
-          <ColumnHeader text={conj.tense} />
-          {conj.values.map((value, i) => (
-            <EditCell
-              key={i}
-              value={value}
-              onChange={(text) => handleEdit(conj.tense, i, text)}
-            />
-          ))}
+      <ScrollView horizontal>
+        {props.verb.conjugations.map((conj) => (
+          <View style={styles.column} key={conj.tense}>
+            <ColumnHeader text={conj.tense} />
+            {conj.values.map((value, i) => (
+              <EditCell
+                key={i}
+                value={value}
+                onChange={(text) => handleEdit(conj.tense, i, text)}
+              />
+            ))}
+          </View>
+        ))}
+        <View style={styles.column}>
+          <EditColumnHeader text={newTense} onChange={setNewTense} />
+          <Button label="Add Tense" onPress={addTense} />
         </View>
-      ))}
-      <View style={styles.column}>
-        <EditColumnHeader text={newTense} onChange={setNewTense} />
-        <Button label="Add Tense" onPress={addTense} />
-      </View>
+      </ScrollView>
     </View>
   );
 }
@@ -95,7 +97,7 @@ export default function ConjugationTable(props: Props) {
 const styles = StyleSheet.create({
   container: { flexDirection: "row" },
   column: {
-    width: "33%",
+    width: 125,
   },
   cell: {
     padding: 8,

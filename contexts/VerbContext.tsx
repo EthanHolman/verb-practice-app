@@ -4,6 +4,7 @@ import {
   getVerbs,
   getVerb,
   updateVerb,
+  deleteVerb,
 } from "@/data/Verbs";
 import { IVerb } from "@/data/IVerb";
 import { createContext } from "react";
@@ -18,6 +19,7 @@ type VerbContextType = {
   getVerb(verbName: string): Promise<IVerb>;
   createVerb: (verb: IVerb) => Promise<void>;
   updateVerb: (verb: IVerb) => Promise<void>;
+  deleteVerb: (verb: string) => Promise<void>;
 };
 
 export const VerbContext = createContext<VerbContextType>(
@@ -31,8 +33,12 @@ export const VerbProvider = ({ children }: VerbProviderProps) => {
         getVerbNames,
         getVerbs,
         getVerb,
-        createVerb,
+        createVerb: (verb: IVerb) => {
+          verb.infinitive = verb.infinitive.toLocaleLowerCase();
+          return createVerb(verb);
+        },
         updateVerb,
+        deleteVerb,
       }}
     >
       {children}

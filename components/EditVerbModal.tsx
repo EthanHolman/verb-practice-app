@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
 import { useContext, useEffect, useReducer, useState } from "react";
 import { LAYOUT } from "@/styles/theme";
 import TextInput from "./TextInput";
@@ -68,6 +68,21 @@ export default function EditVerbModal(props: Props) {
     });
   }
 
+  function handleDeleteVerb() {
+    Alert.alert(`Delete the verb '${props.verb}'?`, "", [
+      { text: "No" },
+      {
+        text: "Yes",
+        onPress: async () => {
+          await verbsContext.deleteVerb(props.verb!);
+          props.onSave();
+          setShowModal(false);
+        },
+        style: "destructive",
+      },
+    ]);
+  }
+
   return (
     <Modal
       visible={showModal}
@@ -91,6 +106,11 @@ export default function EditVerbModal(props: Props) {
           editable={isNewVerb}
         />
         <ConjugationTable verb={verbData} verbDispatch={verbDataDispatch} />
+        <TextButton
+          color="danger"
+          text="Delete Verb"
+          onPress={handleDeleteVerb}
+        />
       </View>
     </Modal>
   );

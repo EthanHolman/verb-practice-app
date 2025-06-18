@@ -1,6 +1,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { IVerb } from "./IVerb";
 
+function buildKey(val: string): string {
+  return `verb_${val}`;
+}
+
 export async function initVerbs(): Promise<void> {
   try {
     const verbs = await AsyncStorage.getItem("verbs");
@@ -24,7 +28,7 @@ export async function getVerbNames(): Promise<string[]> {
 
 export async function getVerb(verbName: string): Promise<IVerb> {
   try {
-    const found = await AsyncStorage.getItem(`verb_${verbName}`);
+    const found = await AsyncStorage.getItem(buildKey(verbName));
     if (!found) throw new Error("Verb not found");
 
     return JSON.parse(found);
@@ -38,7 +42,7 @@ export async function getVerbs(verbNames: string[]): Promise<IVerb[]> {
   try {
     const toReturn: IVerb[] = [];
     const found = await AsyncStorage.multiGet(
-      verbNames.map((name) => `verb_${name}`)
+      verbNames.map((name) => buildKey(name))
     );
     for (const item of found) if (item[1]) toReturn.push(JSON.parse(item[1]));
 
@@ -54,7 +58,7 @@ export async function createVerb(verb: IVerb): Promise<void> {
     const existingVerbs = await getVerbNames();
     existingVerbs.push(verb.infinitive);
     await AsyncStorage.setItem("verbs", JSON.stringify(existingVerbs));
-    await AsyncStorage.setItem(`verb_${verb.infinitive}`, JSON.stringify(verb));
+    await AsyncStorage.setItem(buildKey(verb.infinitive), JSON.stringify(verb));
   } catch (error) {
     console.error("Error saving verb:", error);
     throw new Error("Error saving verb: " + error);
@@ -63,9 +67,21 @@ export async function createVerb(verb: IVerb): Promise<void> {
 
 export async function updateVerb(verb: IVerb): Promise<void> {
   try {
-    await AsyncStorage.setItem(`verb_${verb.infinitive}`, JSON.stringify(verb));
+    await AsyncStorage.setItem(buildKey(verb.infinitive), JSON.stringify(verb));
   } catch (error) {
     console.error("Error updating verb:", error);
     throw new Error("Error updating verb: " + error);
+  }
+}
+
+export async function deleteVerb(verbName: string): Promise<void> {
+  try {
+    await AsyncStorage.removeItem(buildKey(verbName));
+    let existingVerbs = await getVerbNames();
+    existingVerbs = existingVerbs.filter((x) => x !== verbName);
+    await AsyncStorage.setItem("verbs", JSON.stringify(existingVerbs));
+  } catch (error) {
+    console.error("Error deleting verb:", error);
+    throw new Error("Error deleting verb: " + error);
   }
 }

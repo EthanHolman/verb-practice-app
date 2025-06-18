@@ -5,6 +5,7 @@ import {
   getVerb,
   updateVerb,
   deleteVerb,
+  resetDatabase,
 } from "@/data/Verbs";
 import { IVerb } from "@/data/IVerb";
 import { createContext } from "react";
@@ -20,6 +21,7 @@ type VerbContextType = {
   createVerb: (verb: IVerb) => Promise<void>;
   updateVerb: (verb: IVerb) => Promise<void>;
   deleteVerb: (verb: string) => Promise<void>;
+  resetDatabase: () => Promise<void>;
 };
 
 export const VerbContext = createContext<VerbContextType>(
@@ -39,6 +41,7 @@ export const VerbProvider = ({ children }: VerbProviderProps) => {
         },
         updateVerb,
         deleteVerb,
+        resetDatabase,
       }}
     >
       {children}

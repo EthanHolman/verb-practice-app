@@ -85,3 +85,12 @@ export async function deleteVerb(verbName: string): Promise<void> {
     throw new Error("Error deleting verb: " + error);
   }
 }
+
+export async function resetDatabase(): Promise<void> {
+  try {
+    await AsyncStorage.clear();
+  } catch (error) {
+    console.error("Error clearing asyncstorage DB:", error);
+    throw new Error("Error clearing asyncstorage DB:" + error);
+  }
+}

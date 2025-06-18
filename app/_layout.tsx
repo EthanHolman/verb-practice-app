@@ -47,6 +47,7 @@ export default function RootLayout() {
             name="VerbsScreen"
             options={{ title: "View + Edit Verbs" }}
           />
+          <Stack.Screen name="SettingsScreen" options={{ title: "Settings" }} />
         </Stack>
       </VerbProvider>
     </View>

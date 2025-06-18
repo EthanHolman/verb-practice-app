@@ -56,8 +56,13 @@ export async function getVerbs(verbNames: string[]): Promise<IVerb[]> {
 export async function createVerb(verb: IVerb): Promise<void> {
   try {
     const existingVerbs = await getVerbNames();
-    existingVerbs.push(verb.infinitive);
-    await AsyncStorage.setItem("verbs", JSON.stringify(existingVerbs));
+
+    // prevent duplicate infinitives
+    if (!existingVerbs.includes(verb.infinitive)) {
+      existingVerbs.push(verb.infinitive);
+      await AsyncStorage.setItem("verbs", JSON.stringify(existingVerbs));
+    }
+
     await AsyncStorage.setItem(buildKey(verb.infinitive), JSON.stringify(verb));
   } catch (error) {
     console.error("Error saving verb:", error);

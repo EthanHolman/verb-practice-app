@@ -24,7 +24,7 @@ export default function ImportVerbModal(props: Props) {
     for (const verb of selectedVerbs) {
       try {
         const result = await getVerb(verb);
-        verbsContext.createVerb(result);
+        await verbsContext.createVerb(result);
       } catch (error) {
         console.error(error);
       }
@@ -44,10 +44,7 @@ export default function ImportVerbModal(props: Props) {
     setVerbsLoading(true);
 
     getVerbs()
-      .then((response) => {
-        console.log(response);
-        setVerbs(response);
-      })
+      .then((response) => setVerbs(response))
       .catch((error) => console.error(error))
       .finally(() => setVerbsLoading(false));
   }

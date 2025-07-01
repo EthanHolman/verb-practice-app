@@ -10,27 +10,35 @@ type Props = PropsWithChildren<
   } & PressableProps
 >;
 
-export default function Button(props: Props) {
+export default function Button({
+  color,
+  label,
+  textSize,
+  style,
+  ...props
+}: Props) {
   return (
     <Pressable
       style={[
         {
-          backgroundColor: COLORS[props.color ?? "primary"],
+          backgroundColor: props.disabled
+            ? COLORS["border"]
+            : COLORS[color ?? "primary"],
           borderRadius: 4,
           padding: 10,
         },
-        props.style,
+        style,
       ]}
-      onPress={props.onPress}
+      {...props}
     >
       <Text
         style={{
           color: "white",
-          fontSize: TYPOGRAPHY[props.textSize ?? "md"],
+          fontSize: TYPOGRAPHY[textSize ?? "md"],
           textAlign: "center",
         }}
       >
-        {props.label}
+        {label}
       </Text>
     </Pressable>
   );

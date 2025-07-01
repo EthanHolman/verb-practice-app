@@ -1,6 +1,6 @@
 import { VerbContext } from "@/contexts/VerbContext";
 import { useContext, useEffect, useReducer } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Platform, Pressable, StyleSheet, View } from "react-native";
 import Typography from "./Typography";
 import { COLORS, LAYOUT } from "@/styles/theme";
 import { initialQuizState, quizReducer } from "@/reducers/QuizReducer";
@@ -27,11 +27,14 @@ export default function Quiz(props: Props) {
 
   if (!currentItem) {
     return (
-      <View>
+      <View style={styles.container}>
         <Typography size="lg">No items available for quiz.</Typography>
         <Typography size="md">
           The selected verbs may not have conjugations.
         </Typography>
+        <Pressable onPress={props.onEndQuiz} style={styles.close}>
+          <Typography color="secondary">End Quiz</Typography>
+        </Pressable>
       </View>
     );
   }
@@ -45,7 +48,7 @@ export default function Quiz(props: Props) {
         <Typography size="sm" color="borderLight">
           VERB
         </Typography>
-        <Typography size="h1" bold style={styles.line}>
+        <Typography size="h2" bold style={styles.line}>
           {currentItem.infinitive}
         </Typography>
         <Typography size="sm" color="borderLight">
@@ -59,28 +62,20 @@ export default function Quiz(props: Props) {
         </Typography>
         <Typography size="lg">{currentItem.tense}</Typography>
       </View>
-      <View style={styles.containerActionArea}>
-        {!quiz.showAnswer && (
-          <Pressable
-            style={styles.hiddenConjugation}
-            onPress={() => quizDispatch({ type: "SHOW_ANSWER" })}
-          >
-            <Typography size="lg">(Tap to show)</Typography>
-          </Pressable>
-        )}
-        {quiz.showAnswer && (
-          <>
-            <View style={styles.hiddenConjugation}>
-              <Typography size="lg">{currentItem.conjugation}</Typography>
-            </View>
-            <Button
-              color="primary"
-              onPress={() => quizDispatch({ type: "NEXT_ITEM" })}
-              label="Next Conjugation"
-            />
-          </>
-        )}
-      </View>
+      <Pressable
+        style={styles.hiddenConjugation}
+        onPress={() => quizDispatch({ type: "TOGGLE_SHOW_ANSWER" })}
+      >
+        <Typography size="lg" style={{ textAlign: "center" }}>
+          {quiz.showAnswer ? currentItem.conjugation : "(Tap to show)"}
+        </Typography>
+      </Pressable>
+      <Button
+        color="primary"
+        onPress={() => quizDispatch({ type: "NEXT_ITEM" })}
+        label="Next Conjugation"
+        style={[styles.nextBtn, { opacity: quiz.showAnswer ? 1 : 0 }]}
+      />
     </View>
   );
 }
@@ -88,7 +83,7 @@ export default function Quiz(props: Props) {
 const styles = StyleSheet.create({
   close: {
     position: "absolute",
-    top: LAYOUT.paddingMd,
+    top: Platform.OS === "android" ? LAYOUT.paddingMd + 15 : LAYOUT.paddingMd,
     left: LAYOUT.paddingMd,
     zIndex: 1,
   },
@@ -108,7 +103,7 @@ const styles = StyleSheet.create({
   },
   containerActionArea: {
     marginTop: LAYOUT.paddingLg,
-    height: 100,
+    height: 150,
     width: "60%",
   },
   hiddenConjugation: {
@@ -117,6 +112,9 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: COLORS.border,
     borderRadius: 10,
-    flex: 1,
+    width: "60%",
+  },
+  nextBtn: {
+    marginTop: LAYOUT.paddingLg,
   },
 });

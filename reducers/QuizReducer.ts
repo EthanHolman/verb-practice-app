@@ -19,7 +19,7 @@ export type QuizState = {
 
 export type QuizAction =
   | { type: "SET_VERB_ITEMS"; payload: IVerb[] }
-  | { type: "SHOW_ANSWER" }
+  | { type: "TOGGLE_SHOW_ANSWER" }
   | { type: "NEXT_ITEM" };
 
 export function quizReducer(state: QuizState, action: QuizAction) {
@@ -45,10 +45,10 @@ export function quizReducer(state: QuizState, action: QuizAction) {
         currentIndex: getRandomNumber(0, items.length - 1),
       };
 
-    case "SHOW_ANSWER":
+    case "TOGGLE_SHOW_ANSWER":
       return {
         ...state,
-        showAnswer: true,
+        showAnswer: !state.showAnswer,
       };
 
     case "NEXT_ITEM":

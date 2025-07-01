@@ -84,6 +84,7 @@ export default function VerbsScreen() {
         textSize="lg"
         label="Start Quiz"
         onPress={handleStartQuiz}
+        disabled={selectedVerbs.length === 0}
       />
     </View>
   );

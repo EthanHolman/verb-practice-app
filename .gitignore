@@ -36,3 +36,6 @@ yarn-error.*
 *.tsbuildinfo
 
 app-example
+
+# remove if converted to non-expo
+/android/
